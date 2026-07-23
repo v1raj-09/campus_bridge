@@ -237,13 +237,17 @@ app.get('/api/admin/users', isAdmin, async (req, res) => {
   }
 });
 
-// Serve frontend static files if present
+// Serve frontend static files safely for Express v5
 const frontendDistPath = path.join(__dirname, "frontend/dist");
 if (fs.existsSync(frontendDistPath)) {
   app.use(express.static(frontendDistPath));
-  app.get("/*", (req, res) => {
-  res.sendFile(path.join(frontendDistPath, "index.html"));
-});
+
+  app.use((req, res, next) => {
+    if (req.method === "GET" && !req.path.startsWith("/api") && req.path !== "/register" && req.path !== "/login" && !req.path.startsWith("/uploads")) {
+      return res.sendFile(path.join(frontendDistPath, "index.html"));
+    }
+    next();
+  });
 }
 
 app.listen(PORT, () => {
