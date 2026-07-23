@@ -237,7 +237,17 @@ app.get('/api/admin/users', isAdmin, async (req, res) => {
   }
 });
 
+// Serve frontend static files
+const frontendDistPath = path.join(__dirname, "frontend/dist");
+if (fs.existsSync(frontendDistPath)) {
+  app.use(express.static(frontendDistPath));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(frontendDistPath, "index.html"));
+  });
+}
+
+
 app.listen(PORT, () => {
-  console.log(`🚀 Backend running on port ${PORT}`);   
-});     
+  console.log(`🚀 Backend running on port ${PORT}`);
+});
 
