@@ -241,9 +241,9 @@ app.get('/api/admin/users', isAdmin, async (req, res) => {
 const frontendDistPath = path.join(__dirname, "frontend/dist");
 if (fs.existsSync(frontendDistPath)) {
   app.use(express.static(frontendDistPath));
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(frontendDistPath, "index.html"));
-  });
+  app.get("/*", (req, res) => {
+  res.sendFile(path.join(frontendDistPath, "index.html"));
+});
 }
 
 app.listen(PORT, () => {
