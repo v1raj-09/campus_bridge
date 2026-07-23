@@ -14,39 +14,39 @@ const Login = () => {
         setInput({ ...input, [e.target.name]: e.target.value });
     };
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
-    setError("");
+    const submitHandler = async (e) => {
+        e.preventDefault();
+        setError("");
 
-    try {
-        const res = await fetch(`${BASE_URL}/login`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(input),
-        });
+        try {
+            const res = await fetch(`${BASE_URL}/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(input),
+            });
 
-        const data = await res.json();
+            const data = await res.json();
 
-        if (res.ok && data.success) {
-            const userToSave = { ...data.user };
+            if (res.ok && data.success) {
+                const userToSave = { ...data.user };
 
-            if (userToSave.profile_photo && !userToSave.profile_photo.startsWith("http")) {
-                userToSave.profile_photo = `${BASE_URL}${userToSave.profile_photo}`;
+                if (userToSave.profile_photo && !userToSave.profile_photo.startsWith("http")) {
+                    userToSave.profile_photo = `${BASE_URL}${userToSave.profile_photo}`;
+                }
+
+                localStorage.setItem("user", JSON.stringify(userToSave));
+                alert("Login Successful!");
+                navigate('/');
+            } else {
+                setError(data.message || "Invalid login credentials");
             }
-
-            localStorage.setItem("user", JSON.stringify(userToSave));
-            alert("Login Successful!");
-            navigate('/');
-        } else {
-            setError(data.message || "Invalid login credentials");
+        } catch (err) {
+            console.error("Frontend Error (Network or Server):", err);
+            setError("Server error, try again later.");
         }
-    } catch (err) {
-        console.error("Frontend Error (Network or Server):", err);
-        setError("Server error, try again later.");
-    }
-};
+    };
 
     return (
         // Outer Container (Your existing styling)       
