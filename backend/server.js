@@ -18,9 +18,13 @@ if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
 console.log("📁 Folders ready");
 
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: [
+    "http://localhost:5173",
+    "https://campus-bridge-rmcet.up.railway.app"
+  ],
   credentials: true,
 }));
+
 
 app.use(fileUpload({
   useTempFiles: true,
