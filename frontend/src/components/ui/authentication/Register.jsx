@@ -55,9 +55,9 @@ const Register = () => {
         if (profilePhoto) formData.append("profile_photo", profilePhoto);
 
         try {
-            const res = await fetch("https://campus-bridge-rmcet.up.railway.app/register", {
-  method: "POST",
-  body: formData,
+           const res = await fetch(`${BASE_URL}/register`, {
+    method: "POST",
+    body: formData,
 });
 
 

@@ -14,44 +14,39 @@ const Login = () => {
         setInput({ ...input, [e.target.name]: e.target.value });
     };
 
-    const submitHandler = async (e) => {
-        e.preventDefault();
-        setError("");
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    setError("");
 
+    try {
+        const res = await fetch(`${BASE_URL}/login`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(input),
+        });
 
-        try {
-            const res = await fetch(`${BASE_URL}/register`, {
-                method: "POST",
-                body: formData,
-            });
+        const data = await res.json();
 
-            const data = await res.json();
+        if (res.ok && data.success) {
+            const userToSave = { ...data.user };
 
-            if (res.ok && data.success) {
-                const userToSave = { ...data.user };
-
-                // Profile Photo Path Fix (Ensures the path is absolute for the frontend)
-                if (userToSave.profile_photo && !userToSave.profile_photo.startsWith("http")) {
-                    userToSave.profile_photo = `https://campusbridge-production-7bbb.up.railway.app${userToSave.profile_photo}`;
-                }
-
-                // Save user data (including ID and Role) to localStorage
-                localStorage.setItem("user", JSON.stringify(userToSave));
-
-                alert("Login Successful!");
-
-                // 🚀 इथे महत्त्वाचा बदल केला आहे: आता थेट होम पेजवर नेव्हिगेट करा
-                navigate('/');
-
-            } else {
-                // Displays the error message from the server (e.g., "Invalid credentials")
-                setError(data.message || "Invalid login credentials");
+            if (userToSave.profile_photo && !userToSave.profile_photo.startsWith("http")) {
+                userToSave.profile_photo = `${BASE_URL}${userToSave.profile_photo}`;
             }
-        } catch (err) {
-            console.error("Frontend Error (Network or Server):", err);
-            setError("Server error, try again later.");
+
+            localStorage.setItem("user", JSON.stringify(userToSave));
+            alert("Login Successful!");
+            navigate('/');
+        } else {
+            setError(data.message || "Invalid login credentials");
         }
-    };
+    } catch (err) {
+        console.error("Frontend Error (Network or Server):", err);
+        setError("Server error, try again later.");
+    }
+};
 
     return (
         // Outer Container (Your existing styling)       
