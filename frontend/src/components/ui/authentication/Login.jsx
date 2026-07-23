@@ -4,8 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 const Login = () => { 
     const navigate = useNavigate(); 
     const [input, setInput] = useState({   
-        email: "",     
-        password: "",   
+        email: "",    
+        password: "",  
         role: "Student", // Default role    
     });
     const [error, setError] = useState("");    
@@ -19,7 +19,7 @@ const Login = () => {
         setError("");
 
         try {
-            const res = await fetch("http://localhost:5000/login", { 
+            const res = await fetch("https://campusbridge-production-7bbb.up.railway.app/login", { 
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(input),
@@ -32,7 +32,7 @@ const Login = () => {
                 
                 // Profile Photo Path Fix (Ensures the path is absolute for the frontend)
                 if (userToSave.profile_photo && !userToSave.profile_photo.startsWith("http")) {
-                    userToSave.profile_photo = `http://localhost:5000${userToSave.profile_photo}`;
+                    userToSave.profile_photo = `https://campusbridge-production-7bbb.up.railway.app${userToSave.profile_photo}`;
                 }
                 
                 // Save user data (including ID and Role) to localStorage
@@ -54,29 +54,29 @@ const Login = () => {
     };
 
     return (
-        // Outer Container (Your existing styling)
-        <div className="flex h-screen bg-gray-50"> 
+        // Outer Container (Your existing styling)       
+        <div className="flex h-screen bg-gray-50">      
             
-            {/* LEFT SIDE: Blue Background */}
-            <div className="w-1/2 bg-blue-800 text-white flex flex-col justify-center items-center p-10">
-                <img src="/bridge-logo.jpg" alt="Logo" className="w-32 mb-6" />
-                <h1 className="text-3xl font-bold mb-3">Welcome Back!</h1>
-                <p className="text-sm text-blue-200">
-                    Login with your enrollment number/email and password to continue.
+            {/* LEFT SIDE: Blue Background */}         
+            <div className="w-1/2 bg-blue-800 text-white flex flex-col justify-center items-center p-10">   
+                <img src="/bridge-logo.jpg" alt="Logo" className="w-32 mb-6" />   
+                <h1 className="text-3xl font-bold mb-3">Welcome Back!</h1>   
+                <p className="text-sm text-blue-200">  
+                    Login with your enrollment number/email and password to continue.   
                 </p>
             </div>
 
-            {/* RIGHT SIDE (Form Card) - Centered */}
-            <div className="w-1/2 flex flex-col justify-center items-center">     
+            {/* RIGHT SIDE (Form Card) - Centered */}    
+            <div className="w-1/2 flex flex-col justify-center items-center">      
                 
-                {/* Form Card */}   
-                <div className="w-full max-w-sm bg-white shadow-2xl rounded-xl p-8 border border-gray-200">   
+                {/* Form Card */}    
+                <div className="w-full max-w-sm bg-white shadow-2xl rounded-xl p-8 border border-gray-200">    
                     
-                    {/* Logo Section */}
-                    <div className="flex flex-col items-center mb-6">   
+                    {/* Logo Section */}   
+                    <div className="flex flex-col items-center mb-6">    
                         <img 
                             src="/rmcetlogo1.jpg" 
-                            alt="RMCET Logo" 
+                            alt="RMCET Logo"    
                             className="w-16 h-16 mb-2" 
                         />
                         <h1 className="text-xl font-bold text-gray-800 tracking-wide mt-1">

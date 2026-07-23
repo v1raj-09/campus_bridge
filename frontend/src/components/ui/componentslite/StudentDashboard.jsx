@@ -15,7 +15,7 @@ const getPendingApplications = (allJobs, appliedJobIds) => {
     return allJobs
         .filter(job => pendingIds.includes(String(job.id)))
         .map(job => ({ ...job, status: 'Reviewing' }));
-};
+};    
 
 const getActiveInternships = () => {
     // Dummy Data for Active Internships (IDs 5 and 6)
