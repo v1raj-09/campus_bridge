@@ -29,16 +29,17 @@ app.use(fileUpload({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/uploads", express.static(uploadDir)); 
+app.use("/uploads", express.static(uploadDir));
 
 let db;
 (async () => {
   try {
     db = await mysql.createConnection({
-      host: "localhost",
-      user: "root",
-      password: "",
-      database: "job_portal",
+      host: process.env.MYSQLHOST || "localhost",
+      user: process.env.MYSQLUSER || "root",
+      password: process.env.MYSQLPASSWORD || "",
+      database: process.env.MYSQL_DATABASE || "job_portal",
+      port: process.env.MYSQLPORT || 3306
     });
     console.log("✅ Connected to MySQL Database");
   } catch (err) {
@@ -47,7 +48,7 @@ let db;
 })();
 
 const isAdmin = (req, res, next) => {
-    next(); 
+  next();
 };
 
 app.post("/register", async (req, res) => {
@@ -100,7 +101,7 @@ app.post("/login", async (req, res) => {
 
     const { email, password, role } = req.body;
 
-    console.log(`➡️ Attempting login for Email: ${email}, Role: ${role}`); 
+    console.log(`➡️ Attempting login for Email: ${email}, Role: ${role}`);
 
     const [rows] = await db.execute("SELECT * FROM users WHERE email=?", [email]);
 
@@ -115,10 +116,10 @@ app.post("/login", async (req, res) => {
     const inputRole = role ? role.toLowerCase() : '';
 
     if (dbRole !== inputRole) {
-        if (!(inputRole === 'alumni' && dbRole === 'alumini')) {
-            console.log(`❌ Login Failed: Role Mismatch. DB: ${dbRole}, Input: ${inputRole}`);
-            return res.status(400).json({ success: false, message: "Invalid credentials" });
-        }
+      if (!(inputRole === 'alumni' && dbRole === 'alumini')) {
+        console.log(`❌ Login Failed: Role Mismatch. DB: ${dbRole}, Input: ${inputRole}`);
+        return res.status(400).json({ success: false, message: "Invalid credentials" });
+      }
     }
 
     if (user.password !== password) {
@@ -142,7 +143,7 @@ app.post("/api/student/upload-resume", async (req, res) => {
       console.error("Missing student ID in request body");
       return res.status(400).json({ success: false, message: "Missing student ID" });
     }
-    
+
     if (!req.files || !req.files.resume)
       return res.status(400).json({ success: false, message: "No file uploaded" });
 
@@ -190,7 +191,7 @@ app.get("/api/student/resume/:studentId", async (req, res) => {
 
     const { studentId } = req.params;
 
-    console.log(`🔍 Attempting to fetch resume for Student ID: ${studentId}`); 
+    console.log(`🔍 Attempting to fetch resume for Student ID: ${studentId}`);
 
     const [rows] = await db.execute(
       "SELECT resume_path FROM student_resumes WHERE student_id=? ORDER BY uploaded_at DESC LIMIT 1",
@@ -200,13 +201,13 @@ app.get("/api/student/resume/:studentId", async (req, res) => {
     if (rows.length === 0) {
       return res.status(200).json({ success: false, message: "No resume uploaded yet!" });
     }
-    
+
     const resumePath = rows[0].resume_path;
 
     res.status(200).json({
       success: true,
       message: "Resume path fetched successfully",
-      resume: resumePath, 
+      resume: resumePath,
     });
   } catch (err) {
     console.error("❌ Resume Check Error:", err);
@@ -215,21 +216,21 @@ app.get("/api/student/resume/:studentId", async (req, res) => {
 });
 
 app.get('/api/admin/users', isAdmin, async (req, res) => {
-    try {
-        if (!db) return res.status(500).json({ success: false, message: "Database not connected" });
-        
-        const [users] = await db.query(
-            "SELECT id, fullname, email, role, profile_photo FROM users WHERE role IN (?, ?, ?)",
-            ['Student', 'Alumni', 'Alumini']
-        );
-        
-        res.status(200).json({ success: true, users });
-        console.log(`✅ Fetched ${users.length} users for Admin.`);
+  try {
+    if (!db) return res.status(500).json({ success: false, message: "Database not connected" });
 
-    } catch (err) {
-        console.error("❌ Error fetching Admin users list:", err);
-        res.status(500).json({ success: false, message: 'Server error while fetching users.' });
-    }
+    const [users] = await db.query(
+      "SELECT id, fullname, email, role, profile_photo FROM users WHERE role IN (?, ?, ?)",
+      ['Student', 'Alumni', 'Alumini']
+    );
+
+    res.status(200).json({ success: true, users });
+    console.log(`✅ Fetched ${users.length} users for Admin.`);
+
+  } catch (err) {
+    console.error("❌ Error fetching Admin users list:", err);
+    res.status(500).json({ success: false, message: 'Server error while fetching users.' });
+  }
 });
 
 app.listen(PORT, () => {
