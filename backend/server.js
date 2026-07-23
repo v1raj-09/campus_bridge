@@ -6,7 +6,7 @@ import path from "path";
 import fs from "fs";
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 const __dirname = path.resolve();
 const uploadDir = path.join(__dirname, "uploads");
@@ -238,5 +238,6 @@ app.get('/api/admin/users', isAdmin, async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Backend running on http://localhost:${PORT}`);
-});
+  console.log(`🚀 Backend running on port ${PORT}`);   
+});     
+
