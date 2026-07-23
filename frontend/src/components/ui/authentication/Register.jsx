@@ -4,7 +4,8 @@ import { Label } from "../label.jsx";
 import { Input } from "../input.jsx";
 
 // Fixed BASE_URL for both local development and production/Railway
-const BASE_URL = import.meta.env.VITE_API_URL || "";
+// Donhi files madhye BASE_URL asa define kara:
+const BASE_URL = import.meta.env.MODE === 'production' ? "" : (import.meta.env.VITE_API_URL || "");
 const REQUIRED_COLLEGE_DOMAIN = "@rmcet.com";
 
 const Register = () => {

@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 // Added BASE_URL definition for both local and production
-const BASE_URL = import.meta.env.VITE_API_URL || "";
+// Donhi files madhye BASE_URL asa define kara:
+const BASE_URL = import.meta.env.MODE === 'production' ? "" : (import.meta.env.VITE_API_URL || "");
 
 const Login = () => {
     const navigate = useNavigate();
