@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+// Added BASE_URL definition for both local and production
+const BASE_URL = import.meta.env.VITE_API_URL || "";
+
 const Login = () => {
     const navigate = useNavigate();
     const [input, setInput] = useState({
@@ -49,9 +52,7 @@ const Login = () => {
     };
 
     return (
-        // Outer Container (Your existing styling)       
         <div className="flex h-screen bg-gray-50">
-
             {/* LEFT SIDE: Blue Background */}
             <div className="w-1/2 bg-blue-800 text-white flex flex-col justify-center items-center p-10">
                 <img src="/bridge-logo.jpg" alt="Logo" className="w-32 mb-6" />
@@ -63,11 +64,7 @@ const Login = () => {
 
             {/* RIGHT SIDE (Form Card) - Centered */}
             <div className="w-1/2 flex flex-col justify-center items-center">
-
-                {/* Form Card */}
                 <div className="w-full max-w-sm bg-white shadow-2xl rounded-xl p-8 border border-gray-200">
-
-                    {/* Logo Section */}
                     <div className="flex flex-col items-center mb-6">
                         <img
                             src="/rmcetlogo1.jpg"
@@ -85,8 +82,6 @@ const Login = () => {
                     {error && <p className="text-red-500 text-center mb-4 text-sm">{error}</p>}
 
                     <form onSubmit={submitHandler} className="space-y-4">
-
-                        {/* Enrollment Number/Email */}
                         <div>
                             <label htmlFor="enrollment" className="text-sm font-medium text-gray-700"> Email</label>
                             <input
@@ -101,7 +96,6 @@ const Login = () => {
                             />
                         </div>
 
-                        {/* Password */}
                         <div>
                             <label htmlFor="password" className="text-sm font-medium text-gray-700">Password</label>
                             <input
@@ -116,7 +110,6 @@ const Login = () => {
                             />
                         </div>
 
-                        {/* Role Selection */}
                         <div className="pt-2">
                             <label className="text-sm font-medium text-gray-700">Role</label>
                             <div className="flex gap-6 mt-2 text-sm">
@@ -134,27 +127,22 @@ const Login = () => {
                                     </label>
                                 ))}
                             </div>
-
                         </div>
 
-                        {/* Login Button */}
                         <button
                             type="submit"
                             className="w-full py-3 bg-gray-800 text-white rounded-md font-semibold hover:bg-gray-900 transition duration-150 shadow-md mt-6"
                         >
                             Login
                         </button>
-
                     </form>
 
-                    {/* Forgot Password Link */}
                     <div className="text-center mt-4">
                         <Link to="/forgot-password" className="text-sm text-gray-500 hover:text-gray-700">
                             Forgot password?
                         </Link>
                     </div>
 
-                    {/* Register Link */}
                     <p className="text-center text-sm mt-4">
                         Don’t have an account?{" "}
                         <Link to="/register" className="text-blue-700 hover:underline">
@@ -163,7 +151,6 @@ const Login = () => {
                     </p>
                 </div>
             </div>
-
         </div>
     );
 };

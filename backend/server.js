@@ -17,14 +17,14 @@ if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
 
 console.log("📁 Folders ready");
 
+// CORS configured with correct Railway production domain
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://campus-bridge-rmcet.up.railway.app"
+    "https://hospitable-liberation-production-4c9a.up.railway.app"
   ],
   credentials: true,
 }));
-
 
 app.use(fileUpload({
   useTempFiles: true,
@@ -237,7 +237,7 @@ app.get('/api/admin/users', isAdmin, async (req, res) => {
   }
 });
 
-// Serve frontend static files
+// Serve frontend static files if present
 const frontendDistPath = path.join(__dirname, "frontend/dist");
 if (fs.existsSync(frontendDistPath)) {
   app.use(express.static(frontendDistPath));
@@ -246,8 +246,6 @@ if (fs.existsSync(frontendDistPath)) {
   });
 }
 
-
 app.listen(PORT, () => {
   console.log(`🚀 Backend running on port ${PORT}`);
 });
-

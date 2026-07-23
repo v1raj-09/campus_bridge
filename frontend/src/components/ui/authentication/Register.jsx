@@ -3,10 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { Label } from "../label.jsx";
 import { Input } from "../input.jsx";
 
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+// Fixed BASE_URL for both local development and production/Railway
+const BASE_URL = import.meta.env.VITE_API_URL || "";
 const REQUIRED_COLLEGE_DOMAIN = "@rmcet.com";
-
-
 
 const Register = () => {
     const navigate = useNavigate();
@@ -55,12 +54,10 @@ const Register = () => {
         if (profilePhoto) formData.append("profile_photo", profilePhoto);
 
         try {
-           const res = await fetch(`${BASE_URL}/register`, {
-    method: "POST",
-    body: formData,
-});
-
-
+            const res = await fetch(`${BASE_URL}/register`, {
+                method: "POST",
+                body: formData,
+            });
 
             const data = await res.json();
 
@@ -86,7 +83,6 @@ const Register = () => {
 
     return (
         <div className="flex min-h-screen bg-white">
-
             <div className="w-1/2 bg-blue-800 text-white flex flex-col justify-center items-center p-10">
                 <img src="/bridge-logo.jpg" alt="Logo" className="w-32 mb-6" />
                 <h1 className="text-3xl font-bold mb-3">Join Us!</h1>
@@ -96,9 +92,7 @@ const Register = () => {
             </div>
 
             <div className="w-1/2 flex flex-col justify-center items-center p-4 overflow-y-auto">
-
                 <div className="w-full max-w-sm bg-white shadow-2xl rounded-xl p-6 py-8 border border-gray-200">
-
                     <div className="flex flex-col items-center mb-6">
                         <img
                             src="/rmcetlogo1.jpg"
@@ -116,7 +110,6 @@ const Register = () => {
                     {error && <p className="text-red-500 text-center mb-4 text-sm">{error}</p>}
 
                     <form onSubmit={submitHandler} className="space-y-4">
-
                         <div>
                             <Label>Full Name</Label>
                             <Input
@@ -203,7 +196,6 @@ const Register = () => {
                         >
                             Register
                         </button>
-
                     </form>
 
                     <p className="text-center text-sm mt-4 text-gray-600">
