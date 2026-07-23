@@ -46,8 +46,33 @@ let db;
       port: process.env.MYSQLPORT || 3306
     });
     console.log("✅ Connected to MySQL Database");
+
+    // Automatically create required tables if they don't exist
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS users (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          fullname VARCHAR(255) NOT NULL,
+          email VARCHAR(255) NOT NULL UNIQUE,
+          password VARCHAR(255) NOT NULL,
+          phoneNumber VARCHAR(50),
+          profile_photo VARCHAR(255),
+          role VARCHAR(50) DEFAULT 'Student',
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS student_resumes (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          student_id INT NOT NULL,
+          resume_path VARCHAR(255) NOT NULL,
+          uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log("📁 Database tables verified/created successfully");
+
   } catch (err) {
-    console.error("❌ MySQL connection error:", err);
+    console.error("❌ MySQL connection/table creation error:", err);
   }
 })();
 
