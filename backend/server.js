@@ -17,11 +17,11 @@ if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
 
 console.log("📁 Folders ready");
 
-// CORS configured with correct new Railway production domain
+// CORS configured with correct current Railway production domain
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://campus-bridge-portal.up.railway.app"
+    "https://campusbridge-production-8a9c.up.railway.app"
   ],
   credentials: true,
 }));
@@ -47,7 +47,6 @@ let db;
     });
     console.log("✅ Connected to MySQL Database");
 
-    // Automatically create required tables if they don't exist
     await db.execute(`
       CREATE TABLE IF NOT EXISTS users (
           id INT AUTO_INCREMENT PRIMARY KEY,
@@ -272,7 +271,8 @@ if (fs.existsSync(frontendDistPath)) {
   app.use(express.static(frontendDistPath));
 
   app.use((req, res, next) => {
-    if (req.method === "GET" && !req.path.startsWith("/api") && req.path !== "/register" && req.path !== "/login" && !req.path.startsWith("/uploads")) {
+    // Fixed: Handled clean routing fallback for SPA (React Router)
+    if (req.method === "GET" && !req.path.startsWith("/api") && !req.path.startsWith("/uploads")) {
       return res.sendFile(path.join(frontendDistPath, "index.html"));
     }
     next();
