@@ -262,8 +262,12 @@ app.get('/api/admin/users', isAdmin, async (req, res) => {
   }
 });
 
-// Serve frontend static files safely
-const frontendDistPath = path.join(__dirname, "frontend", "dist");
+// Serve frontend static files safely with multiple path fallbacks
+let frontendDistPath = path.join(__dirname, "frontend", "dist");
+if (!fs.existsSync(frontendDistPath)) {
+  frontendDistPath = path.join(__dirname, "../frontend/dist");
+}
+
 if (fs.existsSync(frontendDistPath)) {
   app.use(express.static(frontendDistPath));
 
@@ -279,5 +283,3 @@ if (fs.existsSync(frontendDistPath)) {
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Backend running on port ${PORT}`);
 });
-
-
