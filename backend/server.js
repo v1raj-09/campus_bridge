@@ -18,15 +18,16 @@ if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
 console.log("📁 Folders ready");
 
 // CORS configured with correct current Railway production domain
+// CORS configured with correct current Railway production domain
 app.use(cors({
   origin: [
     "http://localhost:5173",
     "https://campusbridge-production-8a9c.up.railway.app",
-    "https://campusbridge-production-d7e6.up.railway.app"
+    "https://campusbridge-production-d7e6.up.railway.app",
+    "https://campusbridge-production-777b.up.railway.app" // Navin domain add kela
   ],
   credentials: true,
 }));
-
 
 
 
