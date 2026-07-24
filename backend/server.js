@@ -17,19 +17,17 @@ if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
 
 console.log("📁 Folders ready");
 
-// CORS configured with correct current Railway production domain
-// CORS configured with correct current Railway production domain
+// CORS configuration for local and all Railway production domains
 app.use(cors({
   origin: [
     "http://localhost:5173",
     "https://campusbridge-production-8a9c.up.railway.app",
     "https://campusbridge-production-d7e6.up.railway.app",
-    "https://campusbridge-production-777b.up.railway.app" // Navin domain add kela
+    "https://campusbridge-production-777b.up.railway.app",
+    "https://campusbridge-production-5b30.up.railway.app"
   ],
   credentials: true,
 }));
-
-
 
 app.use(fileUpload({
   useTempFiles: true,
@@ -276,7 +274,6 @@ if (fs.existsSync(frontendDistPath)) {
   app.use(express.static(frontendDistPath));
 
   app.use((req, res, next) => {
-    // Fixed: Handled clean routing fallback for SPA (React Router)
     if (req.method === "GET" && !req.path.startsWith("/api") && !req.path.startsWith("/uploads")) {
       return res.sendFile(path.join(frontendDistPath, "index.html"));
     }
@@ -284,7 +281,7 @@ if (fs.existsSync(frontendDistPath)) {
   });
 }
 
-// Listen on 0.0.0.0 for proper cloud hosting routing on Railway
+// Listen on 0.0.0.0 for correct cloud proxy routing on Railway
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Backend running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
