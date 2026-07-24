@@ -262,8 +262,8 @@ app.get('/api/admin/users', isAdmin, async (req, res) => {
   }
 });
 
-// Serve frontend static files safely for Express v5
-const frontendDistPath = path.join(__dirname, "frontend/dist");
+// Serve frontend static files safely
+const frontendDistPath = path.join(__dirname, "frontend", "dist");
 if (fs.existsSync(frontendDistPath)) {
   app.use(express.static(frontendDistPath));
 
@@ -275,6 +275,9 @@ if (fs.existsSync(frontendDistPath)) {
   });
 }
 
-app.listen(PORT, () => {
+// Listen on 0.0.0.0 for proper cloud hosting routing on Railway
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Backend running on port ${PORT}`);
 });
+
+
