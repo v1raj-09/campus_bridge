@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "cd frontend && npm install && npm run build && rm -rf ../backend/frontend && mkdir -p ../backend/frontend && cp -r dist ../backend/frontend",
+    "build": "cd frontend && npm install && npm run build && cd .. && rm -rf backend/frontend && mkdir -p backend/frontend && cp -r frontend/dist/* backend/frontend/",
     "start": "node backend/server.js"
   },
   "dependencies": {}
