@@ -101,9 +101,11 @@ const Carousel = React.forwardRef((
       <div
         ref={ref}
         onKeyDownCapture={handleKeyDown}
-        className={cn("relative", className)}
+        // Added bottom padding on mobile/tablet to give room for repositioned arrows if needed
+        className={cn("relative pb-10 sm:pb-0", className)}
         role="region"
         aria-roledescription="carousel"
+        aria-label="Carousel"
         {...props}>
         {children}
       </div>
@@ -139,7 +141,8 @@ const CarouselItem = React.forwardRef(({ className, ...props }, ref) => {
       role="group"
       aria-roledescription="slide"
       className={cn(
-        "min-w-0 shrink-0 grow-0 basis-full",
+        // Responsive slide sizing: Full width on mobile, 1/2 width on sm screens, 1/3 width on md+ screens
+        "min-w-0 shrink-0 grow-0 basis-full sm:basis-1/2 md:basis-1/3",
         orientation === "horizontal" ? "pl-4" : "pt-4",
         className
       )}
@@ -156,9 +159,14 @@ const CarouselPrevious = React.forwardRef(({ className, variant = "outline", siz
       ref={ref}
       variant={variant}
       size={size}
-      className={cn("absolute  h-8 w-8 rounded-full", orientation === "horizontal"
-        ? "-left-12 top-1/2 -translate-y-1/2"
-        : "-top-12 left-1/2 -translate-x-1/2 rotate-90", className)}
+      className={cn(
+        "absolute h-8 w-8 rounded-full shadow-md transition-opacity", 
+        orientation === "horizontal"
+          // Responsive button placement: Inside/overlay on mobile to prevent overflow, outside on desktop (-left-12)
+          ? "left-2 sm:-left-12 top-1/2 -translate-y-1/2 z-10"
+          : "-top-10 left-1/2 -translate-x-1/2 rotate-90 z-10", 
+        className
+      )}
       disabled={!canScrollPrev}
       onClick={scrollPrev}
       {...props}>
@@ -177,9 +185,14 @@ const CarouselNext = React.forwardRef(({ className, variant = "outline", size = 
       ref={ref}
       variant={variant}
       size={size}
-      className={cn("absolute h-8 w-8 rounded-full", orientation === "horizontal"
-        ? "-right-12 top-1/2 -translate-y-1/2"
-        : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90", className)}
+      className={cn(
+        "absolute h-8 w-8 rounded-full shadow-md transition-opacity", 
+        orientation === "horizontal"
+          // Responsive button placement: Inside/overlay on mobile to prevent overflow, outside on desktop (-right-12)
+          ? "right-2 sm:-right-12 top-1/2 -translate-y-1/2 z-10"
+          : "-bottom-10 left-1/2 -translate-x-1/2 rotate-90 z-10", 
+        className
+      )}
       disabled={!canScrollNext}
       onClick={scrollNext}
       {...props}>

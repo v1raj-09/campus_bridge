@@ -23,7 +23,6 @@ const initialJobData = [
     { id: "15", alumni: "Kunal Rathi", company: "Swiggy", location: "Bangalore", industry: "IT", experience: "3-5 years", title: "Backend Developer", description: "Develop and maintain APIs, microservices, and server-side applications in Node.js.", positions: "5 Positions", salary: "14 LPA", mode: "Hybrid", type: "Full-Time" },
 ].map(job => ({ ...job, id: String(job.id) })); // IDs are now strings
 
-// ... (loadJobs, saveJobs, currentJobData, if (currentJobData.length === 0) block - As Is) ...
 const loadJobs = () => {
     try {
         const storedData = localStorage.getItem(STORAGE_KEY);
@@ -50,12 +49,12 @@ if (currentJobData.length === 0) {
     currentJobData = initialJobData;
     saveJobs(currentJobData);
 }
+
 // ====================================================================
-// 🎯 Job Application Tracking Functions (NEW)
+// 🎯 Job Application Tracking Functions
 // ====================================================================
 
 /**
-
  * @returns {string[]} Applied job IDs.
  */
 export const getAppliedJobs = () => {
@@ -69,9 +68,8 @@ export const getAppliedJobs = () => {
 };
 
 /**
- 
- * @param {string | number} jobId - 
- * @returns {boolean} -
+ * @param {string | number} jobId
+ * @returns {boolean}
  */
 export const saveApplication = (jobId) => {
     const appliedJobsList = getAppliedJobs();
@@ -81,7 +79,6 @@ export const saveApplication = (jobId) => {
         appliedJobsList.push(jobIdStr);
         try {
             localStorage.setItem(APPLICATIONS_KEY, JSON.stringify(appliedJobsList));
-            
             window.dispatchEvent(new Event('storage')); 
             return true; 
         } catch (e) {
@@ -93,7 +90,7 @@ export const saveApplication = (jobId) => {
 };
 
 // ====================================================================
-// इतर एक्सपोर्ट्स (As Is)
+// Exports
 // ====================================================================
 
 let jobSubscribers = [];

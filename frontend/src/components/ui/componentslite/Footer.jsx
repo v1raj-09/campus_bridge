@@ -1,80 +1,87 @@
-
-
-
-
 import React from 'react'
 import { Link } from 'react-router-dom'
-// Lucide Icons for Social Media
 import { Linkedin, Twitter, Facebook } from 'lucide-react'; 
 
 const Footer = () => {
   return (
-    // Purple Background from your code: bg-[#6A38C2]
-    <div className="bg-[#6A38C2] text-gray-300 py-10">
-      <div className="container mx-auto max-w-6xl px-4 grid grid-cols-2 md:grid-cols-4 gap-8">
+    <footer className="bg-[#6A38C2] text-gray-200 pt-12 pb-8 border-t border-[#5b2eb0]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Brand */}
-        <div>
-          <h2 className="text-white text-2xl font-bold tracking-wider">CAMPUS BRIDGE</h2>
-          <p className="mt-4 text-sm max-w-[200px]">Connecting Campus talent with Alumni Support and Career Opportunities.</p>
-        </div>
+        {/* Main Grid: Adapts from 1 col on mobile, to 2 on tablets, to 4 on desktop */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 pb-10 border-b border-white/20">
+          
+          {/* Brand Column */}
+          <div className="space-y-4">
+            <h2 className="text-white text-xl sm:text-2xl font-extrabold tracking-wider">CAMPUS BRIDGE</h2>
+            <p className="text-sm text-gray-300 leading-relaxed max-w-sm sm:max-w-xs">
+              Connecting Campus talent with Alumni Support and Career Opportunities.
+            </p>
+          </div>
 
-        {/* Quick Links */}
-        <div>
-          <h3 className="text-white font-semibold mb-3 border-b-2 border-white/50 pb-1 inline-block">Quick Links</h3>
-          {/* Using <ul> and React Link */}
-          <ul className="space-y-3 text-sm">
-            <li><Link to="/" className="hover:text-white transition-colors">Home</Link></li>
-            <li><Link to="/post-job" className="hover:text-white transition-colors">Post a Job</Link></li>
-            <li><Link to="/jobs" className="hover:text-white transition-colors">Browse Jobs</Link></li>
-            <li><Link to="/internships" className="hover:text-white transition-colors">Internships</Link></li>
-          </ul>
-        </div>
+          {/* Quick Links */}
+          <div>
+            <h3 className="text-white font-semibold mb-4 text-base tracking-wide border-b-2 border-white/40 pb-1 inline-block">
+              Quick Links
+            </h3>
+            <ul className="space-y-2.5 text-sm">
+              <li><Link to="/" className="hover:text-white transition-colors block py-0.5">Home</Link></li>
+              <li><Link to="/post-job" className="hover:text-white transition-colors block py-0.5">Post a Job</Link></li>
+              <li><Link to="/jobs" className="hover:text-white transition-colors block py-0.5">Browse Jobs</Link></li>
+              <li><Link to="/internships" className="hover:text-white transition-colors block py-0.5">Internships</Link></li>
+            </ul>
+          </div>
 
-        {/* Categories */}
-        <div>
-          <h3 className="text-white font-semibold mb-3 border-b-2 border-white/50 pb-1 inline-block">Job Categories</h3>
-          <ul className="space-y-3 text-sm">
-            <li><Link to="/jobs?category=fullstack" className="hover:text-white transition-colors">Full Stack Developer</Link></li>
-            <li><Link to="/jobs?category=devops" className="hover:text-white transition-colors">DevOps Engineer</Link></li>
-            <li><Link to="/jobs?category=ml" className="hover:text-white transition-colors">Machine Learning</Link></li>
-            <li><Link to="/jobs?category=pm" className="hover:text-white transition-colors">Product Manager</Link></li>
-          </ul>
-        </div>
+          {/* Categories */}
+          <div>
+            <h3 className="text-white font-semibold mb-4 text-base tracking-wide border-b-2 border-white/40 pb-1 inline-block">
+              Job Categories
+            </h3>
+            <ul className="space-y-2.5 text-sm">
+              <li><Link to="/jobs?category=fullstack" className="hover:text-white transition-colors block py-0.5">Full Stack Developer</Link></li>
+              <li><Link to="/jobs?category=devops" className="hover:text-white transition-colors block py-0.5">DevOps Engineer</Link></li>
+              <li><Link to="/jobs?category=ml" className="hover:text-white transition-colors block py-0.5">Machine Learning</Link></li>
+              <li><Link to="/jobs?category=pm" className="hover:text-white transition-colors block py-0.5">Product Manager</Link></li>
+            </ul>
+          </div>
 
-        {/* Contact & Social */}
-        <div>
-          <h3 className="text-white font-semibold mb-3 border-b-2 border-white/50 pb-1 inline-block">Get in Touch</h3>
-          <p className="text-sm">support@campusbridge.com</p>
-          <p className="text-sm">+1 (555) 123-4567</p>
+          {/* Contact & Social */}
+          <div>
+            <h3 className="text-white font-semibold mb-4 text-base tracking-wide border-b-2 border-white/40 pb-1 inline-block">
+              Get in Touch
+            </h3>
+            <div className="space-y-2 text-sm text-gray-300 mb-6">
+              <p className="hover:text-white transition-colors break-all">support@campusbridge.com</p>
+              <p className="hover:text-white transition-colors">+1 (555) 123-4567</p>
+            </div>
     
-          {/* Social Icons (Using Lucide Icons) */}
-          <div className="flex space-x-4 mt-5">
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-gray-100 transition-colors">
-              <Linkedin className="w-5 h-5"/>
-            </a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-gray-100 transition-colors">
-              <Twitter className="w-5 h-5"/>
-            </a>
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-gray-100 transition-colors">
-              <Facebook className="w-5 h-5"/>
-            </a>
+            {/* Social Icons */}
+            <div className="flex items-center space-x-4">
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white hover:text-[#6A38C2] transition-all duration-300 shadow-sm" aria-label="LinkedIn">
+                <Linkedin className="w-5 h-5"/>
+              </a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white hover:text-[#6A38C2] transition-all duration-300 shadow-sm" aria-label="Twitter">
+                <Twitter className="w-5 h-5"/>
+              </a>
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white hover:text-[#6A38C2] transition-all duration-300 shadow-sm" aria-label="Facebook">
+                <Facebook className="w-5 h-5"/>
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Copyright & Legal */}
+        <div className="flex flex-col sm:flex-row items-center justify-between text-xs sm:text-sm pt-8 text-gray-300 gap-4 text-center">
+          <p>© {new Date().getFullYear()} CampusBridge. All rights reserved.</p>
+          <div className='flex items-center space-x-3'>
+            <Link to="/privacy-policy" className='hover:text-white transition-colors'>Privacy Policy</Link>
+            <span className="text-white/40">•</span>
+            <Link to="/terms" className='hover:text-white transition-colors'>Terms & Conditions</Link>
           </div>
         </div>
 
       </div>
-
-      {/* Copyright & Legal */}
-      <div className="text-center text-sm mt-10 border-t border-gray-700 pt-6">
-        <p className="mb-2">© 2025 CampusBridge. All rights reserved.</p>
-        <div className='flex justify-center space-x-4'>
-            {/* PrivacyPolicy link corrected to use 'to' prop */}
-            <Link to="/privacy-policy" className='hover:text-white transition-colors'>Privacy Policy</Link>
-            <p>|</p>
-            <Link to="/terms" className='hover:text-white transition-colors'>Terms & Conditions</Link>
-        </div>
-      </div>
-    </div>
+    </footer>
   )
 }
 

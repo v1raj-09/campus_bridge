@@ -4,7 +4,7 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "inline-flex items-center rounded-md border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
   {
     variants: {
       variant: {
@@ -16,9 +16,17 @@ const badgeVariants = cva(
           "border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80",
         outline: "text-foreground",
       },
+      size: {
+        default: "px-2.5 py-0.5 text-xs",
+        // Responsive size variant that scales up automatically from mobile to desktop
+        responsive: "px-2 py-0.5 text-[10px] sm:px-2.5 sm:py-0.5 sm:text-xs md:px-3 md:py-1 md:text-sm",
+        sm: "px-2 py-0.5 text-[10px]",
+        lg: "px-3 py-1 text-sm",
+      },
     },
     defaultVariants: {
       variant: "default",
+      size: "responsive",
     },
   }
 )
@@ -26,9 +34,10 @@ const badgeVariants = cva(
 function Badge({
   className,
   variant,
+  size,
   ...props
 }) {
-  return (<div className={cn(badgeVariants({ variant }), className)} {...props} />);
+  return (<div className={cn(badgeVariants({ variant, size }), className)} {...props} />);
 }
 
 export { Badge, badgeVariants }

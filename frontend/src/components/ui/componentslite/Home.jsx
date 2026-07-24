@@ -5,18 +5,22 @@ import LatestsJob from "./LatestsJob";
 import Footer from "./Footer";
 import CompaniesSection from "./CompaniesSection";
 
-
-
 const Home = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   return (
-    <div className="bg-gray-50">
-      {/* Pass searchTerm and setter to Header */}
+    <div className="bg-gray-50 min-h-screen flex flex-col overflow-x-hidden">
+      {/* Header with Search */}
       <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-      <Categories />
-      {/* Pass searchTerm to LatestsJob for filtering */}
-      <LatestsJob searchTerm={searchTerm} />
+      
+      {/* Main Content Area */}
+      <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 sm:space-y-16 py-8 sm:py-12">
+        <Categories />
+        <CompaniesSection />
+        <LatestsJob searchTerm={searchTerm} />
+      </main>
+
+      {/* Footer */}
       <Footer />
     </div>
   );

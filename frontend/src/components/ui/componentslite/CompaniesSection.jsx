@@ -1,6 +1,7 @@
 // CompaniesSection.jsx
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";
 import "swiper/css";
 
 // companies array
@@ -16,40 +17,44 @@ const companies = [
 
 const CompaniesSection = () => {
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-6">
-        <h2 className="text-3xl font-bold text-gray-800 mb-12 text-center">
+    <section className="py-12 sm:py-16 bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-8 sm:mb-12 text-center">
           Our Partner Companies
         </h2>
 
-        <div className="hidden md:grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center justify-center">
-          {companies.map((company) => (
-            <a
-              key={company.name}
-              href={company.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center p-4 bg-white shadow-md rounded-lg hover:shadow-xl transition transform hover:-translate-y-1 duration-300"
-            >
-              <img src={company.logo} alt={company.name} className="h-12 object-contain" />
-            </a>
-          ))}
-        </div>
-
-        <div className="md:hidden">
-          <Swiper spaceBetween={20} slidesPerView={2} breakpoints={{
-            640: { slidesPerView: 3 },
-            768: { slidesPerView: 4 },
-          }}>
+        {/* Unified Responsive View using Swiper across all screen sizes (with Autoplay for smooth infinite loop feel, falling back gracefully) */}
+        <div className="w-full">
+          <Swiper
+            modules={[Autoplay]}
+            spaceBetween={16}
+            slidesPerView={2}
+            loop={true}
+            autoplay={{
+              delay: 2500,
+              disableOnInteraction: false,
+            }}
+            breakpoints={{
+              480: { slidesPerView: 3, spaceBetween: 20 },
+              768: { slidesPerView: 4, spaceBetween: 24 },
+              1024: { slidesPerView: 5, spaceBetween: 24 },
+              1280: { slidesPerView: 6, spaceBetween: 24 },
+            }}
+            className="w-full py-2"
+          >
             {companies.map((company) => (
-              <SwiperSlide key={company.name}>
+              <SwiperSlide key={company.name} className="h-auto">
                 <a
                   href={company.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center p-4 bg-white shadow-md rounded-lg hover:shadow-xl transition transform hover:-translate-y-1 duration-300"
+                  className="flex items-center justify-center p-4 sm:p-5 bg-white shadow-sm hover:shadow-md border border-gray-100 rounded-xl transition-all duration-300 transform hover:-translate-y-1 h-24 sm:h-28"
                 >
-                  <img src={company.logo} alt={company.name} className="h-12 object-contain" />
+                  <img 
+                    src={company.logo} 
+                    alt={company.name} 
+                    className="max-h-10 sm:max-h-12 w-auto object-contain filter grayscale hover:grayscale-0 transition duration-300" 
+                  />
                 </a>
               </SwiperSlide>
             ))}

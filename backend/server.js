@@ -17,11 +17,11 @@ if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
 
 console.log("📁 Folders ready");
 
-// CORS configured with correct Railway production domain
+// CORS configured with correct new Railway production domain
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://hospitable-liberation-production-4c9a.up.railway.app"
+    "https://campus-bridge-portal.up.railway.app"
   ],
   credentials: true,
 }));

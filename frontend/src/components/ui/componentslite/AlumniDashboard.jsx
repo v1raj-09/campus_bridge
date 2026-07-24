@@ -31,25 +31,29 @@ const JobCard = ({ job }) => {
     const statusColor = job.status.includes('Pending') ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700';
 
     return (
-        <div className="p-5 bg-white border border-gray-200 rounded-xl shadow-md">
-            <div className="flex justify-between items-start mb-3">
-                <h4 className="text-lg font-bold text-red-600 truncate">{job.title}</h4>
-                <span className={`px-3 py-1 text-xs font-semibold rounded-full ${statusColor}`}>
+        <div className="p-4 sm:p-5 bg-white border border-gray-200 rounded-xl shadow-md flex flex-col justify-between">
+          <div>
+            <div className="flex justify-between items-start mb-3 gap-2">
+                <h4 className="text-base sm:text-lg font-bold text-red-600 line-clamp-1">{job.title}</h4>
+                <span className={`px-2.5 py-1 text-xs font-semibold rounded-full flex-shrink-0 ${statusColor}`}>
                     {job.status}
                 </span>
             </div>
             
             <div className="flex items-center text-sm text-gray-600 mb-2">
-                <MapPin className="w-4 h-4 mr-2 text-blue-500" />
-                <span>{job.location}</span>
+                <MapPin className="w-4 h-4 mr-2 text-blue-500 flex-shrink-0" />
+                <span className="truncate">{job.location}</span>
             </div>
+          </div>
             
+          <div>
             <p className="text-xs text-gray-500 border-t pt-2 mt-3">
                 Posted on: {job.datePosted}
             </p>
-            <button className="mt-3 text-red-500 hover:text-red-700 text-sm font-medium transition">
+            <button className="mt-2 text-red-500 hover:text-red-700 text-sm font-medium transition">
                 View/Edit
             </button>
+          </div>
         </div>
     );
 };
@@ -87,21 +91,21 @@ const AlumniJobPostForm = ({ onPostSuccess, onCancel }) => {
             }, 1000);
 
         } catch (error) {
-            setMessage({ type: 'error', text: `❌ Failed to post job: Server error` });
+            setMessage({ type: 'error', text: '❌ Failed to post job: Server error' });
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="p-6 border border-red-300 bg-red-50 rounded-xl shadow-xl mb-8 relative">
+        <div className="p-4 sm:p-6 border border-red-300 bg-red-50 rounded-xl shadow-xl mb-8 relative">
             
             <button onClick={onCancel} className="absolute top-3 right-3 p-1 rounded-full text-gray-500 hover:bg-red-100 transition" title="Close Form">
                 <X className="w-5 h-5" />
             </button>
             
-            <h3 className="text-2xl font-bold text-red-700 mb-5 border-b border-red-200 pb-2 flex items-center gap-2">
-                <Briefcase className="w-6 h-6" /> Create New Job Posting
+            <h3 className="text-xl sm:text-2xl font-bold text-red-700 mb-5 border-b border-red-200 pb-2 flex items-center gap-2 pr-8">
+                <Briefcase className="w-6 h-6 flex-shrink-0" /> Create New Job Posting
             </h3>
             
             {message && (
@@ -110,15 +114,15 @@ const AlumniJobPostForm = ({ onPostSuccess, onCancel }) => {
                 </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-5">
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
                      <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-1">Job Title <span className="text-red-500">*</span></label>
                         <div className="relative">
-                            <Briefcase className="w-4 h-4 absolute left-3 top-2.5 text-gray-400" />
+                            <Briefcase className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                             <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required 
                                    placeholder="e.g., Software Engineer"
-                                   className="pl-10 block w-full rounded-md border border-gray-300 shadow-sm p-2 text-sm focus:border-red-500 focus:ring-red-500 transition" />
+                                   className="pl-10 block w-full rounded-md border border-gray-300 shadow-sm p-2 text-sm focus:border-red-500 focus:ring-red-500 transition bg-white" />
                         </div>
                     </div>
                     <div>
@@ -126,26 +130,26 @@ const AlumniJobPostForm = ({ onPostSuccess, onCancel }) => {
                         <div className="relative">
                             <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} required
                                    placeholder="e.g., Google, TCS"
-                                   className="pl-3 block w-full rounded-md border border-gray-300 shadow-sm p-2 text-sm focus:border-red-500 focus:ring-red-500 transition" />
+                                   className="pl-3 block w-full rounded-md border border-gray-300 shadow-sm p-2 text-sm focus:border-red-500 focus:ring-red-500 transition bg-white" />
                         </div>
                     </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-1">Location <span className="text-red-500">*</span></label>
                         <div className="relative">
-                            <MapPin className="w-4 h-4 absolute left-3 top-2.5 text-gray-400" />
+                            <MapPin className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                             <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} required
                                    placeholder="e.g., Pune, Remote, Mumbai"
-                                   className="pl-10 block w-full rounded-md border border-gray-300 shadow-sm p-2 text-sm focus:border-red-500 focus:ring-red-500 transition" />
+                                   className="pl-10 block w-full rounded-md border border-gray-300 shadow-sm p-2 text-sm focus:border-red-500 focus:ring-red-500 transition bg-white" />
                         </div>
                     </div>
                 </div>
                 <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-1">Job Description <span className="text-red-500">*</span></label>
                     <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows="4" required
-                                   placeholder="Provide detailed description, responsibilities, and company details..."
-                                   className="block w-full rounded-md border border-gray-300 shadow-sm p-3 text-sm focus:border-red-500 focus:ring-red-500 transition"></textarea>
+                              placeholder="Provide detailed description, responsibilities, and company details..."
+                              className="block w-full rounded-md border border-gray-300 shadow-sm p-3 text-sm focus:border-red-500 focus:ring-red-500 transition bg-white"></textarea>
                 </div>
 
                 <div className="pt-2">
@@ -207,42 +211,42 @@ const AlumniDashboard = () => {
     };
 
     return (
-        <div className="p-8 bg-gray-50 min-h-screen">
-            <h1 className="text-3xl font-extrabold text-gray-900 mb-6 border-b pb-3">
+        <div className="p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-6 border-b pb-3">
                 Alumni Connect Dashboard
             </h1>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                 <div className={`p-6 rounded-xl shadow-lg transition-shadow duration-300 hover:shadow-xl border-blue-500 hover:border-blue-600 bg-white border-t-4 border-b-2`}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+                 <div className="p-5 sm:p-6 rounded-xl shadow-lg transition-shadow duration-300 hover:shadow-xl border-blue-500 hover:border-blue-600 bg-white border-t-4 border-b-2">
                     <div className="flex items-center justify-between">
-                        <h4 className="text-sm font-medium text-gray-500 uppercase">Open Job Postings</h4>
-                        <Briefcase className="w-6 h-6 text-gray-400" />
+                        <h4 className="text-xs sm:text-sm font-medium text-gray-500 uppercase">Open Job Postings</h4>
+                        <Briefcase className="w-5 sm:w-6 h-5 sm:h-6 text-gray-400" />
                     </div>
-                    <p className="mt-2 text-3xl font-bold text-gray-800">{stats.openJobs}</p>
+                    <p className="mt-2 text-2xl sm:text-3xl font-bold text-gray-800">{stats.openJobs}</p>
                     <p className="mt-4 text-xs text-gray-600 border-t pt-2">Total jobs available for current students</p>
                 </div>
-                 <div className={`p-6 rounded-xl shadow-lg transition-shadow duration-300 hover:shadow-xl border-purple-500 hover:border-purple-600 bg-white border-t-4 border-b-2`}>
+                 <div className="p-5 sm:p-6 rounded-xl shadow-lg transition-shadow duration-300 hover:shadow-xl border-purple-500 hover:border-purple-600 bg-white border-t-4 border-b-2">
                     <div className="flex items-center justify-between">
-                        <h4 className="text-sm font-medium text-gray-500 uppercase">Mentorship Requests</h4>
-                        <MessageSquare className="w-6 h-6 text-gray-400" />
+                        <h4 className="text-xs sm:text-sm font-medium text-gray-500 uppercase">Mentorship Requests</h4>
+                        <MessageSquare className="w-5 sm:w-6 h-5 sm:h-6 text-gray-400" />
                     </div>
-                    <p className="mt-2 text-3xl font-bold text-gray-800">{stats.mentorshipRequests}</p>
+                    <p className="mt-2 text-2xl sm:text-3xl font-bold text-gray-800">{stats.mentorshipRequests}</p>
                     <p className="mt-4 text-xs text-gray-600 border-t pt-2">New students seeking your guidance</p>
                 </div>
-                 <div className={`p-6 rounded-xl shadow-lg transition-shadow duration-300 hover:shadow-xl border-green-500 hover:border-green-600 bg-white border-t-4 border-b-2`}>
+                 <div className="p-5 sm:p-6 rounded-xl shadow-lg transition-shadow duration-300 hover:shadow-xl border-green-500 hover:border-green-600 bg-white border-t-4 border-b-2">
                     <div className="flex items-center justify-between">
-                        <h4 className="text-sm font-medium text-gray-500 uppercase">Network Connections</h4>
-                        <Users className="w-6 h-6 text-gray-400" />
+                        <h4 className="text-xs sm:text-sm font-medium text-gray-500 uppercase">Network Connections</h4>
+                        <Users className="w-5 sm:w-6 h-5 sm:h-6 text-gray-400" />
                     </div>
-                    <p className="mt-2 text-3xl font-bold text-gray-800">{stats.networkConnections}</p>
+                    <p className="mt-2 text-2xl sm:text-3xl font-bold text-gray-800">{stats.networkConnections}</p>
                     <p className="mt-4 text-xs text-gray-600 border-t pt-2">View alumni directory</p>
                 </div>
-                 <div className={`p-6 rounded-xl shadow-lg transition-shadow duration-300 hover:shadow-xl border-red-500 hover:border-red-600 bg-white border-t-4 border-b-2`}>
+                 <div className="p-5 sm:p-6 rounded-xl shadow-lg transition-shadow duration-300 hover:shadow-xl border-red-500 hover:border-red-600 bg-white border-t-4 border-b-2">
                     <div className="flex items-center justify-between">
-                        <h4 className="text-sm font-medium text-gray-500 uppercase">Your Jobs Posted</h4>
-                        <TrendingUp className="w-6 h-6 text-gray-400" />
+                        <h4 className="text-xs sm:text-sm font-medium text-gray-500 uppercase">Your Jobs Posted</h4>
+                        <TrendingUp className="w-5 sm:w-6 h-5 sm:h-6 text-gray-400" />
                     </div>
-                    <p className="mt-2 text-3xl font-bold text-gray-800">{stats.jobsPostedByMe}</p>
+                    <p className="mt-2 text-2xl sm:text-3xl font-bold text-gray-800">{stats.jobsPostedByMe}</p>
                     <p className="mt-4 text-xs text-gray-600 border-t pt-2">Total jobs offered to the campus</p>
                 </div>
             </div>
@@ -256,29 +260,31 @@ const AlumniDashboard = () => {
             
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
-                <div className="lg:col-span-2 p-8 bg-white shadow-xl rounded-xl border border-gray-100">
-                    <div className="flex items-center mb-6 border-b pb-3">
-                        <DollarSign className="w-6 h-6 mr-3 text-green-600" />
-                        <h3 className="text-xl font-bold text-gray-800">Contribute & Connect</h3>
-                    </div>
-                    
-                    <p className="text-sm text-gray-600 mb-6">
-                        Support your institution by offering jobs to students.
-                    </p>
+                <div className="lg:col-span-2 p-6 sm:p-8 bg-white shadow-xl rounded-xl border border-gray-100 flex flex-col justify-between">
+                    <div>
+                        <div className="flex items-center mb-6 border-b pb-3">
+                            <DollarSign className="w-6 h-6 mr-3 text-green-600 flex-shrink-0" />
+                            <h3 className="text-lg sm:text-xl font-bold text-gray-800">Contribute & Connect</h3>
+                        </div>
+                        
+                        <p className="text-sm text-gray-600 mb-6">
+                            Support your institution by offering jobs to students.
+                        </p>
 
-                    <div className="max-w-xs">
-                        <button
-                            className={`w-full py-3 px-4 rounded-lg text-white font-semibold text-sm transition duration-200 flex items-center justify-center shadow-md ${showJobPostForm ? 'bg-gray-500 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700'}`}
-                            onClick={handlePostJob}
-                            disabled={showJobPostForm} 
-                        >
-                            <Briefcase className="w-5 h-5 mr-2" />
-                            {showJobPostForm ? 'Form Open' : 'Post a Job'}
-                        </button>
+                        <div className="w-full sm:max-w-xs">
+                            <button
+                                className={`w-full py-3 px-4 rounded-lg text-white font-semibold text-sm transition duration-200 flex items-center justify-center shadow-md ${showJobPostForm ? 'bg-gray-500 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700'}`}
+                                onClick={handlePostJob}
+                                disabled={showJobPostForm} 
+                            >
+                                <Briefcase className="w-5 h-5 mr-2" />
+                                {showJobPostForm ? 'Form Open' : 'Post a Job'}
+                            </button>
+                        </div>
                     </div>
                     
                     <div className="mt-8 pt-4 border-t border-gray-200">
-                        <h4 className="text-lg font-bold text-gray-700 mb-3">Your Contributions Summary</h4>
+                        <h4 className="text-base sm:text-lg font-bold text-gray-700 mb-3">Your Contributions Summary</h4>
                         <ul className="text-sm space-y-2 text-gray-600">
                             <li className="flex justify-between">Jobs Posted: <span className="font-semibold text-blue-600">{stats.jobsPostedByMe}</span></li>
                             <li className="flex justify-between">Students Mentored: <span className="font-semibold text-blue-600">5</span> (Placeholder)</li>
@@ -286,10 +292,10 @@ const AlumniDashboard = () => {
                     </div>
                 </div>
 
-                <div className="p-8 bg-white shadow-xl rounded-xl border border-gray-100">
+                <div className="p-6 sm:p-8 bg-white shadow-xl rounded-xl border border-gray-100">
                     <div className="flex items-center mb-6 border-b pb-3">
-                        <Newspaper className="w-6 h-6 mr-3 text-blue-600" />
-                        <h3 className="text-xl font-bold text-gray-800">Campus News</h3>
+                        <Newspaper className="w-6 h-6 mr-3 text-blue-600 flex-shrink-0" />
+                        <h3 className="text-lg sm:text-xl font-bold text-gray-800">Campus News</h3>
                     </div>
                     <ul className="space-y-4 text-sm">
                         <li className="p-3 border-l-4 border-blue-500 bg-blue-50/50 rounded cursor-pointer transition hover:bg-blue-100">
@@ -309,14 +315,14 @@ const AlumniDashboard = () => {
             </div>
             
             <div className="mt-8">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                     <Briefcase className="w-5 h-5 text-red-600" /> My Posted Jobs
                 </h2>
                 
                 {myPostedJobs.length === 0 ? ( 
-                    <p className="p-4 bg-yellow-100 text-yellow-800 rounded-lg">You haven't posted any jobs yet. Click "Post a Job" to contribute!</p>
+                    <p className="p-4 bg-yellow-100 text-yellow-800 rounded-lg text-sm">You haven't posted any jobs yet. Click "Post a Job" to contribute!</p>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         {myPostedJobs.map(job => (
                             <JobCard key={job.id} job={job} />
                         ))}

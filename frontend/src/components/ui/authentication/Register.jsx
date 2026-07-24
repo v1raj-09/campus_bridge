@@ -3,8 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { Label } from "../label.jsx";
 import { Input } from "../input.jsx";
 
-// Fixed BASE_URL for both local development and production/Railway
-// Donhi files madhye BASE_URL asa define kara:
 const BASE_URL = import.meta.env.MODE === 'production' ? "" : (import.meta.env.VITE_API_URL || "");
 const REQUIRED_COLLEGE_DOMAIN = "@rmcet.com";
 
@@ -83,24 +81,26 @@ const Register = () => {
     };
 
     return (
-        <div className="flex min-h-screen bg-white">
-            <div className="w-1/2 bg-blue-800 text-white flex flex-col justify-center items-center p-10">
-                <img src="/bridge-logo.jpg" alt="Logo" className="w-32 mb-6" />
-                <h1 className="text-3xl font-bold mb-3">Join Us!</h1>
-                <p className="text-sm text-blue-200">
+        <div className="flex min-h-screen bg-white flex-col lg:flex-row">
+            {/* LEFT SIDE: Blue Background (Hidden on mobile, visible on large screens) */}
+            <div className="hidden lg:flex lg:w-1/2 bg-blue-800 text-white flex-col justify-center items-center p-10">
+                <img src="/bridge-logo.jpg" alt="Logo" className="w-32 mb-6 object-contain" />
+                <h1 className="text-3xl font-bold mb-3 text-center">Join Us!</h1>
+                <p className="text-sm text-blue-200 text-center max-w-sm">
                     Register to create an account and start using the portal.
                 </p>
             </div>
 
-            <div className="w-1/2 flex flex-col justify-center items-center p-4 overflow-y-auto">
-                <div className="w-full max-w-sm bg-white shadow-2xl rounded-xl p-6 py-8 border border-gray-200">
+            {/* RIGHT SIDE (Form Card) - Scrollable and Centered */}
+            <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-4 sm:p-10 overflow-y-auto">
+                <div className="w-full max-w-sm bg-white shadow-2xl rounded-xl p-6 sm:p-8 border border-gray-200 my-auto">
                     <div className="flex flex-col items-center mb-6">
                         <img
                             src="/rmcetlogo1.jpg"
                             alt="RMCET Logo"
-                            className="w-16 h-16 mb-2"
+                            className="w-16 h-16 mb-2 object-contain"
                         />
-                        <h1 className="text-xl font-bold text-gray-800 tracking-wide mt-1">
+                        <h1 className="text-xl font-bold text-gray-800 tracking-wide mt-1 text-center">
                             Student Placement Portal
                         </h1>
                         <p className="text-sm text-gray-500 text-center mt-1">
@@ -120,7 +120,7 @@ const Register = () => {
                                 onChange={changeInputHandler}
                                 placeholder="John Doe"
                                 required
-                                className="bg-blue-50/70 border-blue-200"
+                                className="bg-blue-50/70 border-blue-200 mt-1"
                             />
                         </div>
 
@@ -133,7 +133,7 @@ const Register = () => {
                                 onChange={changeInputHandler}
                                 placeholder={input.role === "Student" ? `name${REQUIRED_COLLEGE_DOMAIN}` : "your.email@example.com"}
                                 required
-                                className="bg-blue-50/70 border-blue-200"
+                                className="bg-blue-50/70 border-blue-200 mt-1"
                             />
                             {input.role === "Student" && (
                                 <p className="mt-1 text-xs text-blue-600">
@@ -151,7 +151,7 @@ const Register = () => {
                                 onChange={changeInputHandler}
                                 placeholder="********"
                                 required
-                                className="bg-blue-50/70 border-blue-200"
+                                className="bg-blue-50/70 border-blue-200 mt-1"
                             />
                         </div>
 
@@ -163,15 +163,15 @@ const Register = () => {
                                 value={input.phoneNumber}
                                 onChange={changeInputHandler}
                                 placeholder="1234567890"
-                                className="bg-blue-50/70 border-blue-200"
+                                className="bg-blue-50/70 border-blue-200 mt-1"
                             />
                         </div>
 
                         <div className="pt-1">
                             <Label>Role</Label>
-                            <div className="flex gap-6 mt-2 text-sm">
-                                {["Student", "Alumini", "Admin"].map((role) => (
-                                    <label key={role} className="flex items-center gap-1 text-gray-700">
+                            <div className="flex flex-wrap gap-4 sm:gap-6 mt-2 text-sm">
+                                {["Student", "Alumni", "Admin"].map((role) => (
+                                    <label key={role} className="flex items-center gap-1.5 text-gray-700 cursor-pointer">
                                         <input
                                             type="radio"
                                             name="role"
@@ -201,7 +201,7 @@ const Register = () => {
 
                     <p className="text-center text-sm mt-4 text-gray-600">
                         Already have an account?{" "}
-                        <Link to="/login" className="text-blue-700 hover:underline">
+                        <Link to="/login" className="text-blue-700 hover:underline font-medium">
                             Login
                         </Link>
                     </p>

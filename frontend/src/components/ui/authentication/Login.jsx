@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-// Added BASE_URL definition for both local and production
-// Donhi files madhye BASE_URL asa define kara:
 const BASE_URL = import.meta.env.MODE === 'production' ? "" : (import.meta.env.VITE_API_URL || "");
 
 const Login = () => {
@@ -53,26 +51,26 @@ const Login = () => {
     };
 
     return (
-        <div className="flex h-screen bg-gray-50">
-            {/* LEFT SIDE: Blue Background */}
-            <div className="w-1/2 bg-blue-800 text-white flex flex-col justify-center items-center p-10">
-                <img src="/bridge-logo.jpg" alt="Logo" className="w-32 mb-6" />
-                <h1 className="text-3xl font-bold mb-3">Welcome Back!</h1>
-                <p className="text-sm text-blue-200">
+        <div className="flex min-h-screen bg-gray-50 flex-col lg:flex-row">
+            {/* LEFT SIDE: Blue Background (Hidden on small mobile screens, visible on large screens) */}
+            <div className="hidden lg:flex lg:w-1/2 bg-blue-800 text-white flex-col justify-center items-center p-10">
+                <img src="/bridge-logo.jpg" alt="Logo" className="w-32 mb-6 object-contain" />
+                <h1 className="text-3xl font-bold mb-3 text-center">Welcome Back!</h1>
+                <p className="text-sm text-blue-200 text-center max-w-sm">
                     Login with your enrollment number/email and password to continue.
                 </p>
             </div>
 
-            {/* RIGHT SIDE (Form Card) - Centered */}
-            <div className="w-1/2 flex flex-col justify-center items-center">
-                <div className="w-full max-w-sm bg-white shadow-2xl rounded-xl p-8 border border-gray-200">
+            {/* RIGHT SIDE (Form Card) - Centered across all devices */}
+            <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-6 sm:p-10">
+                <div className="w-full max-w-sm bg-white shadow-2xl rounded-xl p-6 sm:p-8 border border-gray-200">
                     <div className="flex flex-col items-center mb-6">
                         <img
                             src="/rmcetlogo1.jpg"
                             alt="RMCET Logo"
-                            className="w-16 h-16 mb-2"
+                            className="w-16 h-16 mb-2 object-contain"
                         />
-                        <h1 className="text-xl font-bold text-gray-800 tracking-wide mt-1">
+                        <h1 className="text-xl font-bold text-gray-800 tracking-wide mt-1 text-center">
                             Student Placement Portal
                         </h1>
                         <p className="text-sm text-gray-500 text-center">
@@ -84,7 +82,7 @@ const Login = () => {
 
                     <form onSubmit={submitHandler} className="space-y-4">
                         <div>
-                            <label htmlFor="enrollment" className="text-sm font-medium text-gray-700"> Email</label>
+                            <label htmlFor="enrollment" className="text-sm font-medium text-gray-700">Email / Enrollment</label>
                             <input
                                 id="enrollment"
                                 type="text"
@@ -113,9 +111,9 @@ const Login = () => {
 
                         <div className="pt-2">
                             <label className="text-sm font-medium text-gray-700">Role</label>
-                            <div className="flex gap-6 mt-2 text-sm">
+                            <div className="flex flex-wrap gap-4 sm:gap-6 mt-2 text-sm">
                                 {["Student", "Alumni", "Admin"].map((role) => (
-                                    <label key={role} className="flex items-center gap-1 text-gray-700">
+                                    <label key={role} className="flex items-center gap-1.5 text-gray-700 cursor-pointer">
                                         <input
                                             type="radio"
                                             name="role"
@@ -144,9 +142,9 @@ const Login = () => {
                         </Link>
                     </div>
 
-                    <p className="text-center text-sm mt-4">
+                    <p className="text-center text-sm mt-4 text-gray-600">
                         Don’t have an account?{" "}
-                        <Link to="/register" className="text-blue-700 hover:underline">
+                        <Link to="/register" className="text-blue-700 hover:underline font-medium">
                             Register
                         </Link>
                     </p>
