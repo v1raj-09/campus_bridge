@@ -17,7 +17,7 @@ if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
 
 console.log("📁 Folders ready");
 
-// CORS configuration for local and all Railway production domains
+// CORS configuration for local and all production domains
 app.use(cors({
   origin: [
     "http://localhost:5173",
@@ -46,7 +46,10 @@ let db;
       user: process.env.MYSQLUSER || "root",
       password: process.env.MYSQLPASSWORD || "",
       database: process.env.MYSQL_DATABASE || "job_portal",
-      port: process.env.MYSQLPORT || 3306
+      port: process.env.MYSQLPORT || 3306,
+      ssl: {
+        rejectUnauthorized: false // Aiven क्लाउड डेटाबेससाठी SSL कनेक्शन अनिवार्य आहे
+      }
     });
     console.log("✅ Connected to MySQL Database");
 
@@ -281,7 +284,7 @@ if (fs.existsSync(frontendDistPath)) {
   });
 }
 
-// Listen on 0.0.0.0 for correct cloud proxy routing on Railway
+// Listen on 0.0.0.0 for correct cloud proxy routing
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
