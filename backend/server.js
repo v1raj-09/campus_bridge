@@ -51,7 +51,7 @@ let db;
         rejectUnauthorized: false // Aiven क्लाउड डेटाबेससाठी SSL कनेक्शन अनिवार्य आहे
       }
     });
-    console.log("✅ Connected to MySQL Database");
+    console.log("✅ Connected to MySQL Database  ");
 
     await db.execute(`
       CREATE TABLE IF NOT EXISTS users (
