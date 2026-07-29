@@ -81,8 +81,7 @@ app.post("/register", async (req, res) => {
     if (!fullname || !email || !password) {
       return res.status(400).json({ success: false, message: "Fullname, email, and password are required" });
     }
-
-    const [existing] = await db.execute("SELECT * FROM users WHERE email=?", [email]);
+    const [existing] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
     if (existing.length > 0) {
       return res.status(400).json({ success: false, message: "Email already exists" });
     }
@@ -104,10 +103,11 @@ app.post("/register", async (req, res) => {
       await file.mv(filePath);
     }
 
-    await db.execute(
+    await db.query(
       "INSERT INTO users (fullname, email, password, phoneNumber, profile_photo, role) VALUES (?, ?, ?, ?, ?, ?)",
       [fullname, email, password, phoneNumber || null, profilePhotoPath, role || "Student"]
     );
+
 
     res.status(200).json({ success: true, message: "User registered successfully" });
   } catch (err) {
