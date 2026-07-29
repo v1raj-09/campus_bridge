@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Label } from "../label.jsx";
 import { Input } from "../input.jsx";
 
-const BASE_URL = import.meta.env.VITE_API_URL || "https://campus-bridge-5mrf.onrender.com";
+const BASE_URL = "https://campus-bridge-5mrf.onrender.com";
 const REQUIRED_COLLEGE_DOMAIN = "@rmcet.com";
 
 const Register = () => {
