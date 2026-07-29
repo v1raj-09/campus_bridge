@@ -41,7 +41,7 @@ app.use("/uploads", express.static(uploadDir));
 let db;
 (async () => {
   try {
-    db = await mysql.createPool({
+    const dbConfig = {
       host: process.env.MYSQLHOST,
       user: process.env.MYSQLUSER,
       password: process.env.MYSQLPASSWORD,
@@ -51,46 +51,45 @@ let db;
         rejectUnauthorized: false
       },
       waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0
-    });
+      connectionLimit: 5,
+      queueLimit: 0,
+      enableKeepAlive: true,
+      keepAliveInitialDelay: 0
+    };
 
+    db = await mysql.createPool(dbConfig);
     console.log("✅ Connected to MySQL Database");
 
-    // Defer table creation slightly to ensure socket stream is completely settled
-    setTimeout(async () => {
-      try {
-        await db.query(`
-            CREATE TABLE IF NOT EXISTS users (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                fullname VARCHAR(255) NOT NULL,
-                email VARCHAR(255) NOT NULL UNIQUE,
-                password VARCHAR(255) NOT NULL,
-                phoneNumber VARCHAR(50),
-                profile_photo VARCHAR(255),
-                role VARCHAR(50) DEFAULT 'Student',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        `);
+    await db.query(`
+        CREATE TABLE IF NOT EXISTS users (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            fullname VARCHAR(255) NOT NULL,
+            email VARCHAR(255) NOT NULL UNIQUE,
+            password VARCHAR(255) NOT NULL,
+            phoneNumber VARCHAR(50),
+            profile_photo VARCHAR(255),
+            role VARCHAR(50) DEFAULT 'Student',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    `);
 
-        await db.query(`
-            CREATE TABLE IF NOT EXISTS student_resumes (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                student_id INT NOT NULL,
-                resume_path VARCHAR(255) NOT NULL,
-                uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        `);
-        console.log("📁 Database tables verified/created successfully");
-      } catch (tableErr) {
-        console.error("❌ Table creation error:", tableErr);
-      }
-    }, 1000);
+    await db.query(`
+        CREATE TABLE IF NOT EXISTS student_resumes (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            student_id INT NOT NULL,
+            resume_path VARCHAR(255) NOT NULL,
+            uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    `);
+
+    console.log("📁 Database tables verified/created successfully");
 
   } catch (err) {
-    console.error("❌ MySQL connection error:", err);
+    console.error("❌ MySQL connection/table creation error:", err);
   }
 })();
+
+export default db;
 
 const isAdmin = (req, res, next) => {
   next();
