@@ -45,34 +45,33 @@ let db;
 
 async function initDb() {
   try {
-    const dbConfig = {
-      host: process.env.MYSQLHOST,
-      user: process.env.MYSQLUSER,
-      password: process.env.MYSQLPASSWORD,
-      database: process.env.MYSQL_DATABASE || process.env.MYSQLDATABASE || "defaultdb",
-      port: process.env.MYSQLPORT ? parseInt(process.env.MYSQLPORT, 10) : 3306,
-      ssl: {
-        rejectUnauthorized: false
-      },
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0,
-      enableKeepAlive: true,
-      keepAliveInitialDelay: 0,
-    };
+    // Use Aiven's DATABASE_URL directly if available, fallback to individual fields
+    const connectionString = process.env.DATABASE_URL;
 
-    db = mysql.createPool(dbConfig);
+    if (connectionString) {
+      db = mysql.createPool(connectionString);
+    } else {
+      const dbConfig = {
+        host: process.env.MYSQLHOST,
+        user: process.env.MYSQLUSER,
+        password: process.env.MYSQLPASSWORD,
+        database: process.env.MYSQL_DATABASE || "defaultdb",
+        port: process.env.MYSQLPORT ? parseInt(process.env.MYSQLPORT, 10) : 3306,
+        ssl: { rejectUnauthorized: false },
+        waitForConnections: true,
+        connectionLimit: 10,
+        queueLimit: 0,
+        enableKeepAlive: true,
+        keepAliveInitialDelay: 0,
+      };
+      db = mysql.createPool(dbConfig);
+    }
 
-    // Force one real connection now so a bad host/port/credential fails
-    // loudly at startup instead of silently later on the first request.
     const conn = await db.getConnection();
     conn.release();
 
     console.log("✅ Connected to MySQL Database successfully!");
 
-    // These MUST run before any /register or /login request can succeed —
-    // this was the actual cause of the 500 on /register: the tables didn't
-    // exist yet because this block had been dropped from the file.
     await db.execute(`
       CREATE TABLE IF NOT EXISTS users (
           id INT AUTO_INCREMENT PRIMARY KEY,
@@ -99,8 +98,6 @@ async function initDb() {
 
   } catch (err) {
     console.error("❌ MySQL connection/table creation error:", err);
-    // db stays undefined here; every route below guards on `if (!db)`
-    // so requests fail with a clear 500 message instead of crashing.
   }
 }
 
