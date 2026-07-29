@@ -41,18 +41,23 @@ app.use("/uploads", express.static(uploadDir));
 let db;
 (async () => {
   try {
-    const db = await mysql.createPool(process.env.DATABASE_URL || {
+    db = await mysql.createPool(process.env.DATABASE_URL || {
       host: process.env.MYSQLHOST,
       user: process.env.MYSQLUSER,
       password: process.env.MYSQLPASSWORD,
       database: process.env.MYSQL_DATABASE || "defaultdb",
       port: parseInt(process.env.MYSQLPORT, 10) || 3306,
-      ssl: {}
+      ssl: {
+        rejectUnauthorized: false
+      },
+      waitForConnections: true,
+      connectionLimit: 10,
+      queueLimit: 0
     });
 
     console.log("✅ Connected to MySQL Database");
 
-   await db.query(`
+    await db.query(`
         CREATE TABLE IF NOT EXISTS users (
             id INT AUTO_INCREMENT PRIMARY KEY,
             fullname VARCHAR(255) NOT NULL,
