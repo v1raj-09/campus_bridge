@@ -21,6 +21,7 @@ console.log("📁 Folders ready");
 app.use(cors({
   origin: [
     "http://localhost:5173",
+    "https://campus-bridge-eta.vercel.app", // <--- ADD THIS LINE HERE
     "https://campusbridge-production-8a9c.up.railway.app",
     "https://campusbridge-production-d7e6.up.railway.app",
     "https://campusbridge-production-777b.up.railway.app",
