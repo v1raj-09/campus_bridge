@@ -52,7 +52,7 @@ let db;
         rejectUnauthorized: false
       },
       waitForConnections: true,
-      connectionLimit: 5,
+      connectionLimit: 10,
       queueLimit: 0,
       enableKeepAlive: true,
       keepAliveInitialDelay: 0
