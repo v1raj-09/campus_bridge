@@ -41,18 +41,18 @@ app.use("/uploads", express.static(uploadDir));
 let db;
 (async () => {
   try {
-    db = await mysql.createConnection({
-      host: process.env.MYSQLHOST || "localhost",
-      user: process.env.MYSQLUSER || "root",
-      password: process.env.MYSQLPASSWORD || "",
-      database: process.env.MYSQLDATABASE || process.env.MYSQL_DATABASE || "job_portal",
+    const db = await mysql.createConnection({
+      host: process.env.MYSQLHOST,
+      user: process.env.MYSQLUSER,
+      password: process.env.MYSQLPASSWORD,
+      database: process.env.MYSQL_DATABASE || process.env.MYSQLDATABASE || "defaultdb",
       port: process.env.MYSQLPORT ? parseInt(process.env.MYSQLPORT, 10) : 3306,
       ssl: {
-        rejectUnauthorized: false // Aiven क्लाउड डेटाबेससाठी SSL कनेक्शन अनिवार्य आहे
+        rejectUnauthorized: false
       }
     });
-    console.log("✅ Connected to MySQL Database  ");
 
+    console.log("✅ Connected to MySQL Database");
     await db.execute(`
       CREATE TABLE IF NOT EXISTS users (
           id INT AUTO_INCREMENT PRIMARY KEY,
