@@ -18,14 +18,9 @@ if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
 console.log("📁 Folders ready");
 
 // CORS configuration for local and all production domains
-// NOTE: add every domain that actually calls this API. If your frontend is
-// served from this same Render service (see the static-file block near the
-// bottom), same-origin requests don't need CORS at all — this list is only
-// for calls coming from a *different* origin (e.g. a separate frontend deploy).
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://campus-bridge-5mrf.onrender.com",
     "https://campusbridge-production-8a9c.up.railway.app",
     "https://campusbridge-production-d7e6.up.railway.app",
     "https://campusbridge-production-777b.up.railway.app",
@@ -43,41 +38,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(uploadDir));
 
-// --- Database ---------------------------------------------------------
-// Using a pool instead of a single createConnection():
-//  - a lone connection can silently die (idle timeout, network blip) and
-//    every request fails until the process restarts
-//  - a pool hands out/reclaims connections per query and reconnects
-//    automatically, so one dropped connection doesn't take the app down
-//
-// IMPORTANT: MYSQLHOST / MYSQLPORT must be the *public* connection details
-// for your MySQL provider (e.g. Railway's TCP Proxy domain + port from the
-// "Connect" tab, not the internal *.railway.internal host), set as
-// environment variables directly in Render's dashboard.
 let db;
-
-async function initDb() {
+(async () => {
   try {
-    db = mysql.createPool({
+    const db = await mysql.createPool(process.env.DATABASE_URL || {
       host: process.env.MYSQLHOST,
       user: process.env.MYSQLUSER,
       password: process.env.MYSQLPASSWORD,
-      database: process.env.MYSQL_DATABASE || process.env.MYSQLDATABASE || "defaultdb",
-      port: process.env.MYSQLPORT ? parseInt(process.env.MYSQLPORT, 10) : 3306,
-      ssl: {
-        rejectUnauthorized: false
-      },
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0,
+      database: process.env.MYSQL_DATABASE || "defaultdb",
+      port: parseInt(process.env.MYSQLPORT, 10) || 3306,
+      ssl: {}
     });
-
-    // Sanity-check the pool actually reaches a real MySQL server before
-    // moving on — createPool() itself never throws, it only connects lazily
-    // on first query, so we force one connection here to fail fast with a
-    // clear log message instead of a silent "Database not connected" later.
-    const conn = await db.getConnection();
-    conn.release();
 
     console.log("✅ Connected to MySQL Database");
 
@@ -106,12 +77,8 @@ async function initDb() {
 
   } catch (err) {
     console.error("❌ MySQL connection/table creation error:", err);
-    // db stays undefined; every route below already guards on `if (!db)`
-    // so requests fail gracefully with a clear message instead of crashing.
   }
-}
-
-initDb();
+})();
 
 const isAdmin = (req, res, next) => {
   next();
@@ -203,8 +170,6 @@ app.post("/login", async (req, res) => {
 
 app.post("/api/student/upload-resume", async (req, res) => {
   try {
-    if (!db) return res.status(500).json({ success: false, message: "Database not connected" });
-
     const { studentId } = req.body;
 
     if (!studentId) {
@@ -298,20 +263,6 @@ app.get('/api/admin/users', isAdmin, async (req, res) => {
   } catch (err) {
     console.error("❌ Error fetching Admin users list:", err);
     res.status(500).json({ success: false, message: 'Server error while fetching users.' });
-  }
-});
-
-// Simple health/status endpoint — handy for confirming the DB connection
-// from a browser without digging through Render logs (GET /db-status)
-app.get("/db-status", async (req, res) => {
-  if (!db) {
-    return res.status(500).json({ connected: false, message: "Database not connected" });
-  }
-  try {
-    await db.execute("SELECT 1");
-    res.status(200).json({ connected: true, message: "Database connection OK" });
-  } catch (err) {
-    res.status(500).json({ connected: false, message: err.message });
   }
 });
 
