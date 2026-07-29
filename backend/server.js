@@ -47,12 +47,11 @@ let db;
       password: process.env.MYSQLPASSWORD,
       database: process.env.MYSQL_DATABASE || process.env.MYSQLDATABASE || "defaultdb",
       port: process.env.MYSQLPORT ? parseInt(process.env.MYSQLPORT, 10) : 3306,
-      ssl: {
-        rejectUnauthorized: false
-      }
+      ssl: {} // Required for secure cloud handshake on Aiven
     });
 
     console.log("✅ Connected to MySQL Database");
+
     await db.execute(`
       CREATE TABLE IF NOT EXISTS users (
           id INT AUTO_INCREMENT PRIMARY KEY,
