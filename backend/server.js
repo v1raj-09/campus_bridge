@@ -45,17 +45,29 @@ let db;
 
 async function initDb() {
   try {
-    // Use Aiven's DATABASE_URL directly if available, fallback to individual fields
-    const connectionString = process.env.DATABASE_URL;
+    let dbConfig = {};
 
-    if (connectionString) {
-      db = mysql.createPool(connectionString);
+    if (process.env.DATABASE_URL) {
+      const parsedUrl = new URL(process.env.DATABASE_URL);
+      dbConfig = {
+        host: parsedUrl.hostname,
+        user: parsedUrl.username,
+        password: parsedUrl.password,
+        database: parsedUrl.pathname.replace(/^\//, ""),
+        port: parsedUrl.port ? parseInt(parsedUrl.port, 10) : 3306,
+        ssl: { rejectUnauthorized: false },
+        waitForConnections: true,
+        connectionLimit: 10,
+        queueLimit: 0,
+        enableKeepAlive: true,
+        keepAliveInitialDelay: 0,
+      };
     } else {
-      const dbConfig = {
+      dbConfig = {
         host: process.env.MYSQLHOST,
         user: process.env.MYSQLUSER,
         password: process.env.MYSQLPASSWORD,
-        database: process.env.MYSQL_DATABASE || "defaultdb",
+        database: process.env.MYSQL_DATABASE || process.env.MYSQLDATABASE || "defaultdb",
         port: process.env.MYSQLPORT ? parseInt(process.env.MYSQLPORT, 10) : 3306,
         ssl: { rejectUnauthorized: false },
         waitForConnections: true,
@@ -64,8 +76,9 @@ async function initDb() {
         enableKeepAlive: true,
         keepAliveInitialDelay: 0,
       };
-      db = mysql.createPool(dbConfig);
     }
+
+    db = mysql.createPool(dbConfig);
 
     const conn = await db.getConnection();
     conn.release();
