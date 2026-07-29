@@ -45,8 +45,8 @@ let db;
       host: process.env.MYSQLHOST || "localhost",
       user: process.env.MYSQLUSER || "root",
       password: process.env.MYSQLPASSWORD || "",
-      database: process.env.MYSQL_DATABASE || "job_portal",
-      port: process.env.MYSQLPORT || 3306,
+      database: process.env.MYSQLDATABASE || process.env.MYSQL_DATABASE || "job_portal",
+      port: process.env.MYSQLPORT ? parseInt(process.env.MYSQLPORT, 10) : 3306,
       ssl: {
         rejectUnauthorized: false // Aiven क्लाउड डेटाबेससाठी SSL कनेक्शन अनिवार्य आहे
       }
