@@ -21,7 +21,8 @@ console.log("📁 Folders ready");
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://campus-bridge-eta.vercel.app", // <--- ADD THIS LINE HERE
+    "https://campus-bridge-eta.vercel.app",
+    "https://campus-bridge-5mrf.onrender.com",
     "https://campusbridge-production-8a9c.up.railway.app",
     "https://campusbridge-production-d7e6.up.railway.app",
     "https://campusbridge-production-777b.up.railway.app",
@@ -39,15 +40,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(uploadDir));
 
+// --- Database ---------------------------------------------------------
 let db;
-(async () => {
+
+async function initDb() {
   try {
     const dbConfig = {
       host: process.env.MYSQLHOST,
       user: process.env.MYSQLUSER,
       password: process.env.MYSQLPASSWORD,
-      database: process.env.MYSQL_DATABASE || "defaultdb",
-      port: parseInt(process.env.MYSQLPORT, 10) || 3306,
+      database: process.env.MYSQL_DATABASE || process.env.MYSQLDATABASE || "defaultdb",
+      port: process.env.MYSQLPORT ? parseInt(process.env.MYSQLPORT, 10) : 3306,
       ssl: {
         rejectUnauthorized: false
       },
@@ -55,18 +58,53 @@ let db;
       connectionLimit: 10,
       queueLimit: 0,
       enableKeepAlive: true,
-      keepAliveInitialDelay: 0
+      keepAliveInitialDelay: 0,
     };
 
-    db = await mysql.createPool(dbConfig);
+    db = mysql.createPool(dbConfig);
+
+    // Force one real connection now so a bad host/port/credential fails
+    // loudly at startup instead of silently later on the first request.
+    const conn = await db.getConnection();
+    conn.release();
+
     console.log("✅ Connected to MySQL Database successfully!");
 
-  } catch (err) {
-    console.error("❌ MySQL connection error:", err);
-  }
-})();
+    // These MUST run before any /register or /login request can succeed —
+    // this was the actual cause of the 500 on /register: the tables didn't
+    // exist yet because this block had been dropped from the file.
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS users (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          fullname VARCHAR(255) NOT NULL,
+          email VARCHAR(255) NOT NULL UNIQUE,
+          password VARCHAR(255) NOT NULL,
+          phoneNumber VARCHAR(50),
+          profile_photo VARCHAR(255),
+          role VARCHAR(50) DEFAULT 'Student',
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
 
-export default db;
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS student_resumes (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          student_id INT NOT NULL,
+          resume_path VARCHAR(255) NOT NULL,
+          uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    console.log("📁 Database tables verified/created successfully");
+
+  } catch (err) {
+    console.error("❌ MySQL connection/table creation error:", err);
+    // db stays undefined here; every route below guards on `if (!db)`
+    // so requests fail with a clear 500 message instead of crashing.
+  }
+}
+
+initDb();
 
 const isAdmin = (req, res, next) => {
   next();
@@ -81,6 +119,7 @@ app.post("/register", async (req, res) => {
     if (!fullname || !email || !password) {
       return res.status(400).json({ success: false, message: "Fullname, email, and password are required" });
     }
+
     const [existing] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
     if (existing.length > 0) {
       return res.status(400).json({ success: false, message: "Email already exists" });
@@ -108,7 +147,6 @@ app.post("/register", async (req, res) => {
       [fullname, email, password, phoneNumber || null, profilePhotoPath, role || "Student"]
     );
 
-
     res.status(200).json({ success: true, message: "User registered successfully" });
   } catch (err) {
     console.error("❌ Register Error:", err);
@@ -124,7 +162,7 @@ app.post("/login", async (req, res) => {
 
     console.log(`➡️ Attempting login for Email: ${email}, Role: ${role}`);
 
-    const [rows] = await db.execute("SELECT * FROM users WHERE email=?", [email]);
+    const [rows] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
 
     if (rows.length === 0) {
       console.log(`❌ Login Failed: Email '${email}' not found.`);
@@ -158,6 +196,8 @@ app.post("/login", async (req, res) => {
 
 app.post("/api/student/upload-resume", async (req, res) => {
   try {
+    if (!db) return res.status(500).json({ success: false, message: "Database not connected" });
+
     const { studentId } = req.body;
 
     if (!studentId) {
@@ -187,7 +227,7 @@ app.post("/api/student/upload-resume", async (req, res) => {
 
     await file.mv(filePath);
 
-    await db.execute(
+    await db.query(
       "INSERT INTO student_resumes (student_id, resume_path) VALUES (?, ?)",
       [studentId, `/uploads/${fileName}`]
     );
@@ -214,8 +254,8 @@ app.get("/api/student/resume/:studentId", async (req, res) => {
 
     console.log(`🔍 Attempting to fetch resume for Student ID: ${studentId}`);
 
-    const [rows] = await db.execute(
-      "SELECT resume_path FROM student_resumes WHERE student_id=? ORDER BY uploaded_at DESC LIMIT 1",
+    const [rows] = await db.query(
+      "SELECT resume_path FROM student_resumes WHERE student_id = ? ORDER BY uploaded_at DESC LIMIT 1",
       [studentId]
     );
 
@@ -251,6 +291,20 @@ app.get('/api/admin/users', isAdmin, async (req, res) => {
   } catch (err) {
     console.error("❌ Error fetching Admin users list:", err);
     res.status(500).json({ success: false, message: 'Server error while fetching users.' });
+  }
+});
+
+// Quick health check — hit this in a browser to confirm the DB is really
+// connected and the users table actually exists, without digging through logs.
+app.get("/db-status", async (req, res) => {
+  if (!db) {
+    return res.status(500).json({ connected: false, message: "Database not connected" });
+  }
+  try {
+    const [tables] = await db.query("SHOW TABLES");
+    res.status(200).json({ connected: true, tables });
+  } catch (err) {
+    res.status(500).json({ connected: false, message: err.message });
   }
 });
 
