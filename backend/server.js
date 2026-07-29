@@ -41,7 +41,7 @@ app.use("/uploads", express.static(uploadDir));
 let db;
 (async () => {
   try {
-    db = await mysql.createPool(process.env.DATABASE_URL || {
+    db = await mysql.createPool({
       host: process.env.MYSQLHOST,
       user: process.env.MYSQLUSER,
       password: process.env.MYSQLPASSWORD,
